@@ -1,0 +1,27 @@
+{
+  "name": "tensor",
+  "version": "1.0.0",
+  "description": "TensorFlow implemented in Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fongelias/tensor.git"
+  },
+  "keywords": [
+    "tensor",
+    "tensorflow",
+    "javascript"
+  ],
+  "author": "Elias Fong <fongelias@gmail.com> (http://elias.tru.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fongelias/tensor/issues"
+  },
+  "homepage": "https://github.com/fongelias/tensor#readme",
+  "dependencies": {
+    "mocha": "^3.4.1"
+  }
+}
