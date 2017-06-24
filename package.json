@@ -4,9 +4,9 @@
   "description": "TensorFlow implemented in Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "build": "rollup -c",
-    "doc": "./node_modules/.bin/jsdoc ./lib/tensor.js"
+    "test": "BABEL_ENV=test mocha --compilers js:babel-core/register ./**/*.test.js",
+    "build": "BABEL_ENV=dev rollup -c",
+    "doc": "./node_modules/.bin/jsdoc ./lib/tensor/tensor.js"
   },
   "repository": {
     "type": "git",
@@ -23,9 +23,11 @@
     "url": "https://github.com/fongelias/tensor/issues"
   },
   "homepage": "https://github.com/fongelias/tensor#readme",
-  "dependencies": {
-    "babel-plugin-external-helpers": "^6.22.0",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.25.0",
     "babel-preset-es2015": "^6.24.1",
+    "jsdoc": "^3.4.3",
     "mocha": "^3.4.1",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-eslint": "^3.0.0"
