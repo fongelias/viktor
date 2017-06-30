@@ -1,1 +1,1 @@
-export * from './tensor-lib';
+module.exports = require('./tensor-lib');
