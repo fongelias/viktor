@@ -3,3 +3,7 @@ node_modules/
 out/
 
 examples/
+
+.nyc_output/
+
+tensor-lib.js
