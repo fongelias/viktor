@@ -1,6 +1,8 @@
 # tensor
 TensorFlow implemented in Javascript
 
+[![Build Status](https://travis-ci.org/fongelias/tensor.svg?branch=master)](https://travis-ci.org/fongelias/tensor)
+
 ## Process
 ### MNIST example
 [MNIST](http://yann.lecun.com/exdb/mnist/) is a database of handwritten digits. We will use this data to train our first example of machine learning in tensor. (This tutorial is essentially a clone of [this tutorial](https://www.tensorflow.org/get_started/mnist/beginners) and is created for our js implementation TensorFlow.)
