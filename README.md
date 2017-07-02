@@ -2,6 +2,7 @@
 TensorFlow implemented in Javascript
 
 [![Build Status](https://travis-ci.org/fongelias/tensor.svg?branch=master)](https://travis-ci.org/fongelias/tensor)
+[![Coverage Status](https://coveralls.io/repos/github/fongelias/tensor/badge.svg?branch=master)](https://coveralls.io/github/fongelias/tensor?branch=master)
 
 ## Process
 ### MNIST example
