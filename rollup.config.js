@@ -1,7 +1,7 @@
 //Dependencies
 import babel from 'rollup-plugin-babel';
 import localResolve from 'rollup-plugin-local-resolve';
-import resolve from 'rollup-plugin-node-resolve';
+//import resolve from 'rollup-plugin-node-resolve';
 //import eslint from 'rollup-plugin-eslint';
 
 //Module
@@ -11,7 +11,7 @@ export default {
 	dest: 'tensor-lib.js',
 	plugins: [
 		localResolve(),
-		resolve(),
+		//resolve(),
 		/*eslint({
 			exclude: [
 				'',
