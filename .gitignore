@@ -2,7 +2,7 @@ node_modules/
 
 doc/
 
-examples/
+sandbox/
 
 .nyc_output/
 

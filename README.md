@@ -7,26 +7,11 @@ TensorFlow implemented in Javascript
 ### MNIST example
 [MNIST](http://yann.lecun.com/exdb/mnist/) is a database of handwritten digits. We will use this data to train our first example of machine learning in tensor. (This tutorial is essentially a clone of [this tutorial](https://www.tensorflow.org/get_started/mnist/beginners) and is created for our js implementation TensorFlow.)
 
-#### Flatten
-First, we will transform our data into something that can more easily be processed. In this case, we will transform the image sets into a tensor. 
+#### MNIST Data
+The [MNIST dataset in CSV format](https://pjreddie.com/projects/mnist-in-csv/) is what we'll be using for our example. We will be using a subset of the data that is created using the command:
+`head -10000 mnist_train.csv > mnist_train_10000.csv`
 
-#### Train
-To train our model, we will use [Softmax Regression](http://ufldl.stanford.edu/tutorial/supervised/SoftmaxRegression/). The model will process an image and give probabilities of being each digit (0-9).
+Each row starts with the label, then the pixel data for the original image of the handwritten number. We will be generating a target array from the label, as well as an input array from the rest of the line.
 
-Softmax has two steps: adding up evidence of our input being in certain classes, then converting that evidence into probabilities (through a weighted sum).
-
-Evidence can be represented as the sum of the product of weights and their inputs, plus some bias.
-
-
-#### Test
-#### Validate
-
-
-
-## Definitions
-Term | Definition
---- | ---
-MNIST | database of handwritten digits
-Tensor | geometric object describing linear relations between vectors/scalars/tensors.
-Softmax Regression | Multinomial logistic regression, generalization of logistic regression that can be used for multi-class classification.
+#### Training
 
