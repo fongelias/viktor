@@ -1,6 +1,6 @@
 {
   "name": "viktor",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Javascript ML",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "machine learning",
     "javascript"
   ],
-  "author": "Elias Fong <fongelias@gmail.com> (http://elias.tru.io/)",
+  "author": "Elias Fong <fongelias@gmail.com> (http://fongelias.github.io/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/fongelias/viktor/issues"
