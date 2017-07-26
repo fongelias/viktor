@@ -1,4 +1,4 @@
-# tensor
+# Viktor
 TensorFlow implemented in Javascript
 
 [![Build Status](https://travis-ci.org/fongelias/tensor.svg?branch=master)](https://travis-ci.org/fongelias/tensor)

@@ -1,0 +1,14 @@
+
+node_modules/
+
+lib/
+
+examples/
+
+doc/
+
+coverage/
+
+sandbox/
+
+rollup.config.js

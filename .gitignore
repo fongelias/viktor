@@ -6,4 +6,4 @@ sandbox/
 
 .nyc_output/
 
-tensor-lib.js
+viktor.js

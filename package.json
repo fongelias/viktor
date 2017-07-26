@@ -1,7 +1,7 @@
 {
-  "name": "tensor",
+  "name": "viktor",
   "version": "1.0.0",
-  "description": "TensorFlow implemented in Javascript",
+  "description": "Javascript ML",
   "main": "index.js",
   "scripts": {
     "test": "BABEL_ENV=test mocha --compilers js:babel-core/register ./**/*.test.js",
@@ -11,17 +11,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fongelias/tensor.git"
+    "url": "git+https://github.com/fongelias/viktor.git"
   },
   "keywords": [
     "tensor",
-    "tensorflow",
+    "machine learning",
     "javascript"
   ],
   "author": "Elias Fong <fongelias@gmail.com> (http://elias.tru.io/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fongelias/tensor/issues"
+    "url": "https://github.com/fongelias/viktor/issues"
   },
   "homepage": "https://github.com/fongelias/tensor#readme",
   "devDependencies": {

@@ -8,7 +8,7 @@ import localResolve from 'rollup-plugin-local-resolve';
 export default {
 	entry: 'lib/index.js',
 	format: 'cjs',
-	dest: 'tensor-lib.js',
+	dest: 'viktor.js',
 	plugins: [
 		localResolve(),
 		//resolve(),
