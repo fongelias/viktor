@@ -1,7 +1,7 @@
 # Viktor
 Javascript Machine Learning Library.
 
-[![Build Status](https://travis-ci.org/fongelias/tensor.svg?branch=master)](https://travis-ci.org/fongelias/tensor)
+[![Build Status](https://travis-ci.org/fongelias/viktor.svg?branch=master)](https://travis-ci.org/fongelias/viktor)
 
 
 
