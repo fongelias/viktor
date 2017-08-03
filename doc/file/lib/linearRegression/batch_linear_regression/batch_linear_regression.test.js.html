@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">lib/linearRegression/batch_linear_regression/batch_linear_regression.test.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/fongelias/viktor" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">NeuralNetwork</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork.html">NeuralNetwork</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Tensor</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Tensor/Tensor.js~Tensor.html">Tensor</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">curves/sigmoidCurve</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sigmoidCurve">sigmoidCurve</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">curves/sigmoidDerivative</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sigmoidDerivative">sigmoidDerivative</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">ordinaryLeastSquares/interceptOLS</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interceptOLS">interceptOLS</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">ordinaryLeastSquares/ols_regression</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ols_regression">ols_regression</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/0D/balanceMagnitude</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-balanceMagnitude">balanceMagnitude</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/avgPoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-avgPoints">avgPoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/balanceMagnitudeArray</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-balanceMagnitudeArray">balanceMagnitudeArray</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/cummulativeAvgPoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-cummulativeAvgPoints">cummulativeAvgPoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/cummulativeRangePoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-cummulativeRangePoints">cummulativeRangePoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/evalError</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evalError">evalError</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/evalGuess</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evalGuess">evalGuess</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/gradientStep</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-gradientStep">gradientStep</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/meanSquaredErrors</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-meanSquaredErrors">meanSquaredErrors</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/sumPoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sumPoints">sumPoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/sumSquaredErrors</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sumSquaredErrors">sumSquaredErrors</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/sumSquaredResiduals</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sumSquaredResiduals">sumSquaredResiduals</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/linearRegression/batch_linear_regression/batch_linear_regression.test.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;assert&apos;;
+
+
+import { batch_linear_regression } from &apos;./batch_linear_regression&apos;;
+
+
+describe(&apos;A batch_linear_regression function&apos;, () =&gt; {
+
+
+	const inputA = [
+		[100, 50, 50],
+		[10, 5, 5],
+		[9, 4.5, 4.5],
+		[90, 2, 88],
+		[76, 70, 6],
+		[131, 130,1],
+		[25, 2, 23],
+		[46, 46, 0],
+		[88, 46, 42],
+		[1, 0.5, 0.5],
+	];
+
+	const resultA = {
+		weights: [ 0.026908488556801467, 0.9579421926221323, 0.5919867482496322 ],
+		errorHistory: [ 
+			576,
+			576,
+			576,
+			576,
+			-433.3593600000003,
+			326.0422480896005,
+			-245.301145772692,
+			184.55477003354267,
+			-138.85162678243623,
+			104.46640992603382 
+		],
+		error: 104.46640992603382,
+	}
+
+	it(&apos;should return an object&apos;, () =&gt; {
+
+		assert(typeof batch_linear_regression(inputA, null, 10) == &apos;object&apos;);
+	})
+
+	it(&apos;should return an object with weights, change in error over time, and final error&apos;, () =&gt; {
+		const regressionResult = batch_linear_regression(inputA);
+		const hasWeights = Array.isArray(regressionResult.weights) ? true : false;
+		const hasErrorOverTime = Array.isArray(regressionResult.errorHistory) ? true : false;
+		const hasFinalError = typeof regressionResult.error == &apos;number&apos; ? true : false;
+
+		assert(hasWeights &amp;&amp; hasErrorOverTime &amp;&amp; hasFinalError);
+	})
+
+	it(&apos;should work on an array with more than 2 values&apos;, () =&gt; {
+
+		assert.deepEqual(batch_linear_regression(inputA, null, 10, (val) =&gt; val * 0.1), resultA);
+	})
+
+	it(&apos;should result in the same result when given the same arguments&apos;, () =&gt; {
+		assert.deepEqual(batch_linear_regression(inputA, null, 12, (val) =&gt; val * 0.1, 1),batch_linear_regression(inputA, null, 12));
+	})
+
+	it(&apos;should return different results when the starting weights are different&apos;, () =&gt; {
+		assert.notDeepEqual(batch_linear_regression(inputA, [100,1,1], 12),batch_linear_regression(inputA, null, 12));
+	})
+
+})
+
+
+
+
+
+
+
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

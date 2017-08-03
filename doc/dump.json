@@ -1,0 +1,2721 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "name": "lib/NeuralNetwork/NeuralNetwork.js",
+    "content": "import { Matrix, RandomGaussianGenerator, multiplyMatricies, arrayToMatrix } from 'stones';\nimport { sigmoidCurve, sigmoidDerivative } from '../curves';\n\n\n\n/**\nClass representing a Neural Network\n*/\nexport class NeuralNetwork {\n\n\t/**\n\tCreate a NeuralNetwork\n\t@constructor\n\t@param {Int} inputNodes - The number of input nodes\n\t@param {Int} hiddenNodes - The number of hidden nodes\n\t@param {Int} outputNodes - The number of output nodes\n\t@param {Int} learningRate - The learning rate for training\n\t*/\n\tconstructor(inputNodes, hiddenNodes, outputNodes, learningRate) {\n\t\tif(!inputNodes || !hiddenNodes || !outputNodes || !learningRate) {\n\t\t\tthrow new Error('NeuralNetwork: an argument is missing');\n\t\t}\n\n\t\t//General Properties\n\t\tthis.inputNodes = inputNodes;\n\t\tthis.hiddenNodes = hiddenNodes;\n\t\tthis.outputNodes = outputNodes;\n\t\tthis.learningRate = learningRate;\n\n\t\t//Matricies\n\t\tthis.inputToHiddenMatrix = new Matrix(hiddenNodes, inputNodes);\n\t\tthis.hiddenToOutputMatrix = new Matrix(outputNodes, hiddenNodes);\n\n\t\t//Utilities\n\t\tthis.randGen = new RandomGaussianGenerator().next;\n\n\n\t\t//Randomize Matricies\n\t\tthis.inputToHiddenMatrix = this.inputToHiddenMatrix.map(() => this.randGen());\n\t\tthis.hiddenToOutputMatrix = this.hiddenToOutputMatrix.map(() => this.randGen());\n\n\t}\n\n\t/**\n\tReturns a copy of the NeuralNetwork\n\t@return {NeuralNetwork} A NeuralNetwork object\n\t*/\n\tcopy() {\n\t\tlet networkCopy = new NeuralNetwork(this.inputNodes, this.hiddenNodes, this.outputNodes, this.learningRate);\n\t\tnetworkCopy.inputToHiddenMatrix = this.inputToHiddenMatrix.copy();\n\t\tnetworkCopy.hiddenToOutputMatrix = this.hiddenToOutputMatrix.copy();\n\n\t\treturn networkCopy;\n\t}\n\n\n\t/**\n\tTrain the NeuralNetwork\n\t@param {array[number]} inputArr - A single dimensional array of number inputs\n\t@param {array[number]} targetArr - A single dimensional array of numbers representing expected outputs\n\t@return {object} An object containing properties representing errors between the Network's output and target outputs and errors in the hidden node layer\n\t*/\n\ttrain(inputArr, targetArr) {\n\t\t//Use Weights to make a guess\n\t\tlet evalResults = this.eval(inputArr);\n\t\t\n\t\t//Calculate Error\n\t\tconst targetMatrix = new Matrix(arrayToMatrix(targetArr,targetArr.length, 1));\n\t\tconst errors = targetMatrix.copy().subtract(evalResults.outputMatrix);\n\t\t\n\t\t//Calculate Hidden Errors\n\t\tconst hiddenOutputMatrix_transposed = this.hiddenToOutputMatrix.copy().transpose();\n\t\tconst hiddenErrors = new Matrix(multiplyMatricies(hiddenOutputMatrix_transposed.matrix, errors.matrix));\n\t\t\n\t\t//Calculate Gradients\n\t\tconst gradient = evalResults.outputMatrix.map(sigmoidDerivative).hadamardProduct(errors).multiply(this.learningRate);\n\t\tconst hiddenGradient = evalResults.hiddenOutputMatrix.map(sigmoidDerivative).hadamardProduct(hiddenErrors).multiply(this.learningRate);\n\t\t\n\t\t//Calculate Change in Outputs\n\t\tconst hiddenToOutputChange = gradient.copy().multiply(evalResults.hiddenOutputMatrix.copy().transpose());\n\t\tconst inputToHiddenChange = hiddenGradient.copy().multiply(evalResults.inputMatrix.copy().transpose());\n\t\t\n\t\t//Update weights\n\t\tthis.hiddenToOutputMatrix.add(hiddenToOutputChange);\n\t\tthis.inputToHiddenMatrix.add(inputToHiddenChange);\n\n\n\t\treturn {\n\t\t\terrors,\n\t\t\thiddenErrors,\n\t\t};\n\t}\n\n\t/**\n\tEvaluate inputs based on the current state of the NeuralNetwork\n\t@param {array[number]} inputArr - A single dimensional array of number inputs\n\t@return {object} An object containing matricies representing the input, hidden node outputs, and final outputs\n\t*/\n\teval(inputArr) {\n\t\tlet inputMatrix = new Matrix(arrayToMatrix(inputArr,inputArr.length, 1));\n\n\t\tlet hiddenOutputMatrix = new Matrix(multiplyMatricies(this.inputToHiddenMatrix.matrix, inputMatrix.matrix));\n\t\thiddenOutputMatrix = hiddenOutputMatrix.map(sigmoidCurve);\n\n\t\treturn {\n\t\t\tinputMatrix,\n\t\t\thiddenOutputMatrix,\n\t\t\toutputMatrix : new Matrix(multiplyMatricies(this.hiddenToOutputMatrix.matrix, hiddenOutputMatrix.matrix)).map(sigmoidCurve),\n\t\t};\n\n\t}\n}",
+    "static": true,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "class",
+    "name": "NeuralNetwork",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js",
+    "static": true,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/NeuralNetwork/NeuralNetwork.js",
+    "importStyle": "{NeuralNetwork}",
+    "description": "Class representing a Neural Network",
+    "lineNumber": 9,
+    "interface": false
+  },
+  {
+    "__docId__": 2,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#constructor",
+    "access": null,
+    "description": "Create a NeuralNetwork",
+    "lineNumber": 19,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Int"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "inputNodes",
+        "description": "The number of input nodes"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Int"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "hiddenNodes",
+        "description": "The number of hidden nodes"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Int"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "outputNodes",
+        "description": "The number of output nodes"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Int"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "learningRate",
+        "description": "The learning rate for training"
+      }
+    ]
+  },
+  {
+    "__docId__": 3,
+    "kind": "member",
+    "name": "inputNodes",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#inputNodes",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 4,
+    "kind": "member",
+    "name": "hiddenNodes",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#hiddenNodes",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 5,
+    "kind": "member",
+    "name": "outputNodes",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#outputNodes",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 6,
+    "kind": "member",
+    "name": "learningRate",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#learningRate",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 7,
+    "kind": "member",
+    "name": "inputToHiddenMatrix",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#inputToHiddenMatrix",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 8,
+    "kind": "member",
+    "name": "hiddenToOutputMatrix",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#hiddenToOutputMatrix",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 9,
+    "kind": "member",
+    "name": "randGen",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#randGen",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 10,
+    "kind": "member",
+    "name": "inputToHiddenMatrix",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#inputToHiddenMatrix",
+    "access": null,
+    "description": null,
+    "lineNumber": 39,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 11,
+    "kind": "member",
+    "name": "hiddenToOutputMatrix",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#hiddenToOutputMatrix",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 12,
+    "kind": "method",
+    "name": "copy",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#copy",
+    "access": null,
+    "description": "Returns a copy of the NeuralNetwork",
+    "lineNumber": 48,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "NeuralNetwork"
+      ],
+      "spread": false,
+      "description": "A NeuralNetwork object"
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "method",
+    "name": "train",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#train",
+    "access": null,
+    "description": "Train the NeuralNetwork",
+    "lineNumber": 63,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array[number]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "inputArr",
+        "description": "A single dimensional array of number inputs"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array[number]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "targetArr",
+        "description": "A single dimensional array of numbers representing expected outputs"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "object"
+      ],
+      "spread": false,
+      "description": "An object containing properties representing errors between the Network's output and target outputs and errors in the hidden node layer"
+    }
+  },
+  {
+    "__docId__": 14,
+    "kind": "method",
+    "name": "eval",
+    "memberof": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork#eval",
+    "access": null,
+    "description": "Evaluate inputs based on the current state of the NeuralNetwork",
+    "lineNumber": 99,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array[number]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "inputArr",
+        "description": "A single dimensional array of number inputs"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "object"
+      ],
+      "spread": false,
+      "description": "An object containing matricies representing the input, hidden node outputs, and final outputs"
+    }
+  },
+  {
+    "__docId__": 15,
+    "kind": "file",
+    "name": "lib/NeuralNetwork/NeuralNetwork.test.js",
+    "content": "import assert from 'assert';\nimport { arraysDeepEqual, Matrix } from 'stones';\n\n\nimport { NeuralNetwork } from './NeuralNetwork';\n\n\ndescribe('A NeuralNetwork Class', () => {\n\n\n\tconst networkWithEqualWeights = (inputNodes, hiddenNodes, outputNodes, weight = 1) => {\n\t\tlet network = new NeuralNetwork(inputNodes ,hiddenNodes, outputNodes, 0.1);\n\t\tnetwork.inputToHiddenMatrix = network.inputToHiddenMatrix.map(() => weight);\n\t\tnetwork.hiddenToOutputMatrix = network.hiddenToOutputMatrix.map(() => weight);\n\n\t\treturn network;\n\t}\n\n\n\n\tdescribe('#constructor()', () => {\n\n\t\tit('should throw an error if there is a missing argument', () => {\n\t\t\tlet testPassed = false;\n\n\t\t\ttry {\n\t\t\t\t//Missing final argument\n\t\t\t\tlet neuralNetwork = new NeuralNetwork(1,2,3);\n\t\t\t} catch(e) {\n\t\t\t\ttestPassed = true;\n\t\t\t}\n\n\t\t\tassert(testPassed);\n\t\t})\n\n\t\tit('should initialize random values for inputToHiddenMatrix property', () => {\n\t\t\tconst warning = \"This test has a chance of systematically failing. Please run again in the case of failure\";\n\n\t\t\tlet matrixA = new NeuralNetwork(4,3,2,0.1).inputToHiddenMatrix;\n\t\t\tlet matrixB = new NeuralNetwork(4,3,2,0.1).inputToHiddenMatrix;\n\n\t\t\tassert(arraysDeepEqual(matrixA, matrixB), warning);\n\t\t})\n\n\t\tit('should initialize random values for hiddenToOutputMatrix property', () => {\n\t\t\tconst warning = \"This test has a chance of systematically failing. Please run again in the case of failure\";\n\n\t\t\tlet matrixA = new NeuralNetwork(4,3,2,0.1).hiddenToOutputMatrix;\n\t\t\tlet matrixB = new NeuralNetwork(4,3,2,0.1).hiddenToOutputMatrix;\n\n\t\t\tassert(arraysDeepEqual(matrixA, matrixB), warning);\n\t\t})\n\t});\n\n\n\n\tdescribe('#copy()', () => {\n\t\tit('should return a NeuralNetwork', () => {\n\t\t\tconst network = new NeuralNetwork(4,3,2,0.1);\n\n\t\t\tassert(network.copy() instanceof NeuralNetwork);\n\t\t})\n\n\t\tit('should return a new NeuralNetwork with the same properties', () => {\n\t\t\tconst network = new NeuralNetwork(4,3,2,0.1);\n\t\t\tconst networkCopy = network.copy();\n\n\t\t\tconst networksAreDifferent = network != networkCopy;\n\t\t\tconst propertiesAreTheSame = network.inputNodes == networkCopy.inputNodes &&\n\t\t\t\t\t\t\t\t\tnetwork.hiddenNodes == networkCopy.hiddenNodes &&\n\t\t\t\t\t\t\t\t\tnetwork.outputNodes == networkCopy.outputNodes &&\n\t\t\t\t\t\t\t\t\tnetwork.learningRate == networkCopy.learningRate &&\n\t\t\t\t\t\t\t\t\tarraysDeepEqual(network.inputToHiddenMatrix, networkCopy.inputToHiddenMatrix) &&\n\t\t\t\t\t\t\t\t\tarraysDeepEqual(network.hiddenToOutputMatrix, networkCopy.hiddenToOutputMatrix);\n\n\t\t\tassert(networksAreDifferent && propertiesAreTheSame);\n\t\t})\n\t})\n\n\n\n\tdescribe('#train()', () => {\n\n\t\tconst inputA = [1,2,3,4,5,6];\n\t\tconst targetA = [0,0,0,0,0,1];\n\n\n\n\t\tit('should alter weights based on the inputs', () => {\n\t\t\tlet neuralNetwork = new NeuralNetwork(6,4,6,0.1);\n\t\t\tconst inputToHidden = neuralNetwork.copy().inputToHiddenMatrix.matrix;\n\t\t\tconst hiddenToOutput = neuralNetwork.copy().hiddenToOutputMatrix.matrix;\n\n\t\t\tneuralNetwork.train(inputA, targetA);\n\t\t\t\n\n\t\t\tassert(!arraysDeepEqual(inputToHidden, neuralNetwork.inputToHiddenMatrix.matrix) &&\n\t\t\t\t   !arraysDeepEqual(hiddenToOutput, neuralNetwork.hiddenToOutputMatrix.matrix))\n\t\t})\n\n\t\tit('should return an object with the property \"errors\"', () => {\n\t\t\tlet neuralNetwork = new NeuralNetwork(6,2,6,0.1);\n\n\t\t\tassert(neuralNetwork.train(inputA,targetA).errors);\n\t\t})\n\n\t\tit('should return an object with the property \"hiddenErrors\"', () => {\n\t\t\tlet neuralNetwork = new NeuralNetwork(6,2,6,0.1);\n\n\t\t\tassert(neuralNetwork.train(inputA,targetA).hiddenErrors);\n\t\t})\n\n\t})\n\n\n\n\tdescribe('#eval()', () => {\n\n\t\tconst neuralNetwork = networkWithEqualWeights(2,2,3);\n\t\tconst inputArr = [1,2];\n\t\tconst result = neuralNetwork.eval(inputArr);\n\t\tconst expectedOutputMatrix = [ \n\t\t\t[ 0.8704730975500355 ],\n     \t\t[ 0.8704730975500355 ],\n     \t\t[ 0.8704730975500355 ], \n     \t];\n\n\n\t\tit('should return an object', () => {\n\t\t\tassert(result instanceof Object);\n\t\t})\n\n\t\tit('should include an inputMatrix matrix as a property in the returned object', () => {\n\t\t\tassert(result.inputMatrix instanceof Matrix);\n\t\t})\n\n\t\tit('should include an hiddenOutputMatrix matrix as a property in the returned object', () => {\n\t\t\tassert(result.hiddenOutputMatrix instanceof Matrix);\n\t\t})\n\n\t\tit('should include an outputMatrix matrix as a property in the returned object', () => {\n\t\t\tassert(result.outputMatrix instanceof Matrix);\n\t\t})\n\n\t\tit('should return the expected output given weights in the network', () => {\n\t\t\tassert(arraysDeepEqual(result.outputMatrix.matrix, expectedOutputMatrix));\n\t\t})\n\t})\n})",
+    "static": true,
+    "longname": "lib/NeuralNetwork/NeuralNetwork.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 16,
+    "kind": "file",
+    "name": "lib/NeuralNetwork/index.js",
+    "content": "export { NeuralNetwork } from './NeuralNetwork';",
+    "static": true,
+    "longname": "lib/NeuralNetwork/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 17,
+    "kind": "file",
+    "name": "lib/Tensor/Tensor.js",
+    "content": "/**\nClass representing a tensor \n*/\nexport class Tensor {\n\n\t/**\n\tCreate a tensor\n\t@constructor\n\t@param {Int | Bool | Array} obj - The tensor's elements as a multi-dimensional array filled with Integers or Booleans\n\t*/\n\tconstructor(obj) {\n\t\tif (this.validate(obj)) {\n\t\t\tthis.tensor = obj;\n\t\t} else {\n\t\t\tthrow new TypeError(\"Tensor: object is not a valid tensor\");\n\t\t}\n\t}\n\n\tvalidate(obj) {\n\t\treturn (\n\t\t\tArray.isArray(obj) ? \n\t\t\tthis.validate(obj[0]) : \n\t\t\t(typeof obj == 'number' || typeof obj == 'boolean')\n\t\t);\n\t}\n\n\t/**\n\tReturns shape of tensor, the sizes of each dimension\n\t@return {Array} The integer sizes of each dimension in an array\n\t*/\n\tshape() {\n\t\tif(!this.tensorShape) {\n\t\t\tthis.tensorShape = this.computeShape(this.tensor);\n\n\t\t\treturn this.tensorShape;\n\t\t} else {\n\t\t\treturn this.tensorShape;\n\t\t}\n\t}\n\n\tcomputeShape(tensor) {\n\t\tlet shape = [];\n\n\t\tif (Array.isArray(tensor)) {\n\t\t\tlet currentDimension = tensor;\n\n\t\t\tfor (var i = 0; i < this.numDimensions(); i++) {\n\t\t\t\tshape.push(currentDimension.length);\n\t\t\t\tcurrentDimension = currentDimension[0];\n\t\t\t}\n\t\t}\n\n\t\treturn shape;\n\t}\n\n\t/**\n\tReturns the number of elements within the tensor\n\t@return {Int} An integer representing the number of elements\n\t*/\n\tnumElements() {\n\t\tif(!this.elements) {\n\n\t\t\tthis.elements = Array.isArray(this.tensor) ? this.countElements(this.tensor) : 1;\n\t\t\treturn this.elements;\n\t\t} else {\n\t\t\treturn this.elements;\n\t\t}\n\t}\n\n\tcountElements(tensor) {\n\t\treturn Array.isArray(tensor[0]) ? tensor.length * this.countElements(tensor[0]) : tensor.length;\n\t}\n\n\t/**\n\tReturns the number of dimensions of the tensor\n\t@return {Int} An integer representing the number of dimensions in the tensor\n\t*/\n\tnumDimensions() {\n\t\tif(!this.dimensions) {\n\t\t\tthis.dimensions = this.computeDimensions(this.tensor);\n\n\t\t\treturn this.dimensions;\n\t\t} else {\n\t\t\treturn this.dimensions;\n\t\t}\n\t}\n\n\tcomputeDimensions(tensor) {\n\t\treturn Array.isArray(tensor) ? 1 + this.computeDimensions(tensor[0]) : 0;\n\t}\n}\n",
+    "static": true,
+    "longname": "lib/Tensor/Tensor.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 18,
+    "kind": "class",
+    "name": "Tensor",
+    "memberof": "lib/Tensor/Tensor.js",
+    "static": true,
+    "longname": "lib/Tensor/Tensor.js~Tensor",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/Tensor/Tensor.js",
+    "importStyle": "{Tensor}",
+    "description": "Class representing a tensor ",
+    "lineNumber": 4,
+    "interface": false
+  },
+  {
+    "__docId__": 19,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#constructor",
+    "access": null,
+    "description": "Create a tensor",
+    "lineNumber": 11,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Int ",
+          " Bool ",
+          " Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "obj",
+        "description": "The tensor's elements as a multi-dimensional array filled with Integers or Booleans"
+      }
+    ]
+  },
+  {
+    "__docId__": 20,
+    "kind": "member",
+    "name": "tensor",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#tensor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 21,
+    "kind": "method",
+    "name": "validate",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#validate",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "obj",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 22,
+    "kind": "method",
+    "name": "shape",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#shape",
+    "access": null,
+    "description": "Returns shape of tensor, the sizes of each dimension",
+    "lineNumber": 31,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": "The integer sizes of each dimension in an array"
+    }
+  },
+  {
+    "__docId__": 23,
+    "kind": "member",
+    "name": "tensorShape",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#tensorShape",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 24,
+    "kind": "method",
+    "name": "computeShape",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#computeShape",
+    "access": null,
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "tensor",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 25,
+    "kind": "method",
+    "name": "numElements",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#numElements",
+    "access": null,
+    "description": "Returns the number of elements within the tensor",
+    "lineNumber": 60,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Int"
+      ],
+      "spread": false,
+      "description": "An integer representing the number of elements"
+    }
+  },
+  {
+    "__docId__": 26,
+    "kind": "member",
+    "name": "elements",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#elements",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 27,
+    "kind": "method",
+    "name": "countElements",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#countElements",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "tensor",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 28,
+    "kind": "method",
+    "name": "numDimensions",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#numDimensions",
+    "access": null,
+    "description": "Returns the number of dimensions of the tensor",
+    "lineNumber": 78,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Int"
+      ],
+      "spread": false,
+      "description": "An integer representing the number of dimensions in the tensor"
+    }
+  },
+  {
+    "__docId__": 29,
+    "kind": "member",
+    "name": "dimensions",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#dimensions",
+    "access": null,
+    "description": null,
+    "lineNumber": 80,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 30,
+    "kind": "method",
+    "name": "computeDimensions",
+    "memberof": "lib/Tensor/Tensor.js~Tensor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/Tensor/Tensor.js~Tensor#computeDimensions",
+    "access": null,
+    "description": null,
+    "lineNumber": 88,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "tensor",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 31,
+    "kind": "file",
+    "name": "lib/Tensor/Tensor.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual, arraysDeepEqual } from 'stones';\n\n\n\nimport { Tensor } from './Tensor';\n\n\n\ndescribe(\"A Tensor Class\", function() {\n\n\t//Nomenclature: test_shape[dimensions][case]\n\tconst test_shape0A = 5;\n\tconst test_shape0B = false;\n\tconst test_shape1A = [4,5,6];\n\tconst test_shape2A = [[1,3,9],[5,10,15]];\n\tconst test_shape3A = [[[1,2,3]],[[1,2,3]]];\n\n\tit(\"should throw an error if an invalid tensor is used in the constructor\", () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tlet tensor = new Tensor(\"A Invalid Input\");\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\n\tdescribe(\"#shape()\", () => {\n\t\tit(\"returns array with sized dimensions of 3D tensor\", () => {\n\t\t\tconst tensor = new Tensor(test_shape3A);\n\t\t\tassert(arraysEqual(tensor.shape(), [2,1,3]));\n\t\t})\n\n\t\tit(\"returns empty array for 0D tensor\", () => {\n\t\t\tconst tensor = new Tensor(test_shape0A);\n\t\t\tconst shape = tensor.shape();\n\t\t\tassert(arraysEqual(shape, []));\n\t\t})\n\n\t\tit(\"returns the existing shape property when it is already set\", () => {\n\t\t\tconst tensor = new Tensor(test_shape0A);\n\t\t\ttensor.shape();\n\t\t\tassert(arraysEqual(tensor.shape(), []));\n\t\t})\n\n\t});\n\n\tdescribe(\"#numElements()\", () => {\n\t\tit(\"returns int of elements in tensor\", () => {\n\t\t\tconst tensor = new Tensor(test_shape3A);\n\t\t\tassert(tensor.numElements() == 6);\n\t\t})\n\n\t\tit(\"returns int of elements in numeral 0D tensor\", () => {\n\t\t\tconst tensor = new Tensor(1);\n\t\t\tassert(tensor.numElements() == 1);\n\t\t})\n\n\t\tit(\"returns the existing elements property when it is already set\", () => {\n\t\t\tconst tensor = new Tensor(test_shape3A);\n\t\t\ttensor.numElements();\n\t\t\tassert(tensor.numElements() == 6);\n\t\t})\n\t});\n\n\tdescribe(\"#numDimensions()\", () => {\n\t\tit(\"returns int of dimensions of tensor\", () => {\n\t\t\tconst tensor = new Tensor(test_shape3A);\n\t\t\tassert(tensor.numDimensions() == 3);\n\t\t})\n\t});\n})\n\n\n\n\n\n",
+    "static": true,
+    "longname": "lib/Tensor/Tensor.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 32,
+    "kind": "file",
+    "name": "lib/Tensor/index.js",
+    "content": "export { Tensor } from './Tensor';",
+    "static": true,
+    "longname": "lib/Tensor/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 33,
+    "kind": "file",
+    "name": "lib/curves/index.js",
+    "content": "export { sigmoidCurve } from './sigmoidCurve/sigmoidCurve';\n\nexport { sigmoidDerivative } from './sigmoidDerivative/sigmoidDerivative';",
+    "static": true,
+    "longname": "lib/curves/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 34,
+    "kind": "file",
+    "name": "lib/curves/sigmoidCurve/sigmoidCurve.js",
+    "content": "/** \nReturns the position x in a sigmoid curve\n@param {number} x - An x value along the sigmoid curve\n@return {number} y - The y value corresponding to the provided x value\n*/\nexport function sigmoidCurve(x) {\n\treturn 1 / (1 + Math.pow(Math.E, -x));\n}",
+    "static": true,
+    "longname": "lib/curves/sigmoidCurve/sigmoidCurve.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 35,
+    "kind": "function",
+    "name": "sigmoidCurve",
+    "memberof": "lib/curves/sigmoidCurve/sigmoidCurve.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/curves/sigmoidCurve/sigmoidCurve.js~sigmoidCurve",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/curves/sigmoidCurve/sigmoidCurve.js",
+    "importStyle": "{sigmoidCurve}",
+    "description": "Returns the position x in a sigmoid curve",
+    "lineNumber": 6,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "x",
+        "description": "An x value along the sigmoid curve"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "y - The y value corresponding to the provided x value"
+    }
+  },
+  {
+    "__docId__": 36,
+    "kind": "file",
+    "name": "lib/curves/sigmoidCurve/sigmoidCurve.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { sigmoidCurve } from './sigmoidCurve';\n\n\ndescribe('A sigmoidCurve function', () => {\n\n\tconst atXZero = 0.5;\n\tconst atXOne = 0.7310585786;\n\n\tit('should return correct value at a certain X (x=0)', () => {\n\t\tassert(sigmoidCurve(0) == atXZero);\n\t})\n\n\tit('should return correct value at a certain X (x=1)', () => {\n\t\tassert(sigmoidCurve(1).toFixed(10) == atXOne);\n\t})\n\n\tit('should not return an incorrect value at a certain X (x=0)', () => {\n\t\tassert(sigmoidCurve(0) != 0);\n\t})\n\n})",
+    "static": true,
+    "longname": "lib/curves/sigmoidCurve/sigmoidCurve.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 37,
+    "kind": "file",
+    "name": "lib/curves/sigmoidDerivative/sigmoidDerivative.js",
+    "content": "/** \nReturns the position x in a derivative sigmoid curve\n@param {number} x - An x value along the derivative sigmoid curve\n@return {number} y - The y value corresponding to the provided x value\n*/\nexport function sigmoidDerivative(x) {\n\treturn x * (1 - x);\n}\n",
+    "static": true,
+    "longname": "lib/curves/sigmoidDerivative/sigmoidDerivative.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 38,
+    "kind": "function",
+    "name": "sigmoidDerivative",
+    "memberof": "lib/curves/sigmoidDerivative/sigmoidDerivative.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/curves/sigmoidDerivative/sigmoidDerivative.js~sigmoidDerivative",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/curves/sigmoidDerivative/sigmoidDerivative.js",
+    "importStyle": "{sigmoidDerivative}",
+    "description": "Returns the position x in a derivative sigmoid curve",
+    "lineNumber": 6,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "x",
+        "description": "An x value along the derivative sigmoid curve"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "y - The y value corresponding to the provided x value"
+    }
+  },
+  {
+    "__docId__": 39,
+    "kind": "file",
+    "name": "lib/curves/sigmoidDerivative/sigmoidDerivative.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { sigmoidDerivative } from './sigmoidDerivative';\n\n\ndescribe('A sigmoidDerivative function', () => {\n\n\tconst atXTwo = -2;\n\tconst atXThree = -6;\n\n\tit('should return correct value at a certain X (x=2)', () => {\n\t\tassert(sigmoidDerivative(2) == atXTwo);\n\t})\n\n\tit('should return correct value at a certain X (x=3)', () => {\n\t\tassert(sigmoidDerivative(3).toFixed(10) == atXThree);\n\t})\n\n})",
+    "static": true,
+    "longname": "lib/curves/sigmoidDerivative/sigmoidDerivative.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 40,
+    "kind": "file",
+    "name": "lib/index.js",
+    "content": "export * from './curves';\n\nexport * from './linearRegression';\n\nexport * from './NeuralNetwork';\n\nexport * from './ordinaryLeastSquares';\n\nexport * from './Tensor';\n\nexport * from './utils';",
+    "static": true,
+    "longname": "lib/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 41,
+    "kind": "file",
+    "name": "lib/linearRegression/batch_linear_regression/batch_linear_regression.js",
+    "content": "import { avgPoints } from '../../utils';\nimport { evalError } from '../../utils';\nimport { gradientStep } from '../../utils';\n\n\n\n\nexport function batch_linear_regression(inputArr,\n\t\t\t\t\t\t\t\t  initialWeights, \n\t\t\t\t\t\t\t\t  iterations = 100,\n\t\t\t\t\t\t\t\t  adjustmentFunc = (val) => val * 0.1, \n\t\t\t\t\t\t\t\t  adjustmentStart = 1) {\n\t//State\n\tlet weights = initialWeights || Array(inputArr[0].length).fill(0);\n\tlet n = 0;\n\tlet avg = avgPoints(inputArr);\n\tlet adjustmentArr = Array(inputArr[0].length).fill(adjustmentStart);\n\tlet errorHistory = [];\n\n\t//Regression\n\tfor(var i = 0; i < iterations; i++) {\n\t\tlet errorVal = evalError(inputArr, weights);\n\t\tlet newWeights = gradientStep(weights, avg, errorVal, adjustmentArr);\n\n\t\tlet newErrorVal = evalError(inputArr, newWeights);\n\n\t\tif(Math.abs(newErrorVal) > Math.abs(errorVal)) {\n\t\t\t//console.log(\"Adjusting learning rate down at \" + i);\n\t\t\tadjustmentArr = adjustmentArr.map(val => adjustmentFunc(val));\n\t\t\terrorHistory.push(errorVal);\n\t\t} else {\n\t\t\tweights = newWeights;\n\t\t\terrorHistory.push(newErrorVal);\n\t\t}\n\t}\n\n\treturn {\n\t\tweights,\n\t\terrorHistory,\n\t\terror: evalError(inputArr, weights),\n\t}\n}\n",
+    "static": true,
+    "longname": "lib/linearRegression/batch_linear_regression/batch_linear_regression.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 42,
+    "kind": "function",
+    "name": "batch_linear_regression",
+    "memberof": "lib/linearRegression/batch_linear_regression/batch_linear_regression.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/linearRegression/batch_linear_regression/batch_linear_regression.js~batch_linear_regression",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/linearRegression/batch_linear_regression/batch_linear_regression.js",
+    "importStyle": "{batch_linear_regression}",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "inputArr",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "initialWeights",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "iterations",
+        "optional": true,
+        "types": [
+          "number"
+        ],
+        "defaultRaw": 100,
+        "defaultValue": "100"
+      },
+      {
+        "name": "adjustmentFunc",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "adjustmentStart",
+        "optional": true,
+        "types": [
+          "number"
+        ],
+        "defaultRaw": 1,
+        "defaultValue": "1"
+      }
+    ],
+    "return": {
+      "types": [
+        "{\"weights\": *, \"errorHistory\": *, \"error\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 43,
+    "kind": "file",
+    "name": "lib/linearRegression/batch_linear_regression/batch_linear_regression.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { batch_linear_regression } from './batch_linear_regression';\n\n\ndescribe('A batch_linear_regression function', () => {\n\n\n\tconst inputA = [\n\t\t[100, 50, 50],\n\t\t[10, 5, 5],\n\t\t[9, 4.5, 4.5],\n\t\t[90, 2, 88],\n\t\t[76, 70, 6],\n\t\t[131, 130,1],\n\t\t[25, 2, 23],\n\t\t[46, 46, 0],\n\t\t[88, 46, 42],\n\t\t[1, 0.5, 0.5],\n\t];\n\n\tconst resultA = {\n\t\tweights: [ 0.026908488556801467, 0.9579421926221323, 0.5919867482496322 ],\n\t\terrorHistory: [ \n\t\t\t576,\n\t\t\t576,\n\t\t\t576,\n\t\t\t576,\n\t\t\t-433.3593600000003,\n\t\t\t326.0422480896005,\n\t\t\t-245.301145772692,\n\t\t\t184.55477003354267,\n\t\t\t-138.85162678243623,\n\t\t\t104.46640992603382 \n\t\t],\n\t\terror: 104.46640992603382,\n\t}\n\n\tit('should return an object', () => {\n\n\t\tassert(typeof batch_linear_regression(inputA, null, 10) == 'object');\n\t})\n\n\tit('should return an object with weights, change in error over time, and final error', () => {\n\t\tconst regressionResult = batch_linear_regression(inputA);\n\t\tconst hasWeights = Array.isArray(regressionResult.weights) ? true : false;\n\t\tconst hasErrorOverTime = Array.isArray(regressionResult.errorHistory) ? true : false;\n\t\tconst hasFinalError = typeof regressionResult.error == 'number' ? true : false;\n\n\t\tassert(hasWeights && hasErrorOverTime && hasFinalError);\n\t})\n\n\tit('should work on an array with more than 2 values', () => {\n\n\t\tassert.deepEqual(batch_linear_regression(inputA, null, 10, (val) => val * 0.1), resultA);\n\t})\n\n\tit('should result in the same result when given the same arguments', () => {\n\t\tassert.deepEqual(batch_linear_regression(inputA, null, 12, (val) => val * 0.1, 1),batch_linear_regression(inputA, null, 12));\n\t})\n\n\tit('should return different results when the starting weights are different', () => {\n\t\tassert.notDeepEqual(batch_linear_regression(inputA, [100,1,1], 12),batch_linear_regression(inputA, null, 12));\n\t})\n\n})\n\n\n\n\n\n\n\n\n",
+    "static": true,
+    "longname": "lib/linearRegression/batch_linear_regression/batch_linear_regression.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 44,
+    "kind": "file",
+    "name": "lib/linearRegression/index.js",
+    "content": "export { batch_linear_regression } from './batch_linear_regression/batch_linear_regression';",
+    "static": true,
+    "longname": "lib/linearRegression/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 45,
+    "kind": "file",
+    "name": "lib/ordinaryLeastSquares/index.js",
+    "content": "export { interceptOLS } from './interceptOLS/interceptOLS';\n\nexport { ols_regression } from './ols_regression/ols_regression';",
+    "static": true,
+    "longname": "lib/ordinaryLeastSquares/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 46,
+    "kind": "file",
+    "name": "lib/ordinaryLeastSquares/interceptOLS/interceptOLS.js",
+    "content": "/** \nReturns the intercept for a line of an Ordinary Least Squares regression\n@param {object} lineObj - An object containing at least a b1 property with the value of the expected slope\n@param {array} avg - An array containing a y value at [1] and an x value at position [0]\n@return {number} An expected intercept value\n*/\nexport function interceptOLS(lineObj, avg) {\n\treturn avg[1] - lineObj.b1 * avg[0];\n}",
+    "static": true,
+    "longname": "lib/ordinaryLeastSquares/interceptOLS/interceptOLS.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 47,
+    "kind": "function",
+    "name": "interceptOLS",
+    "memberof": "lib/ordinaryLeastSquares/interceptOLS/interceptOLS.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/ordinaryLeastSquares/interceptOLS/interceptOLS.js~interceptOLS",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/ordinaryLeastSquares/interceptOLS/interceptOLS.js",
+    "importStyle": "{interceptOLS}",
+    "description": "Returns the intercept for a line of an Ordinary Least Squares regression",
+    "lineNumber": 7,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lineObj",
+        "description": "An object containing at least a b1 property with the value of the expected slope"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "avg",
+        "description": "An array containing a y value at [1] and an x value at position [0]"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "An expected intercept value"
+    }
+  },
+  {
+    "__docId__": 48,
+    "kind": "file",
+    "name": "lib/ordinaryLeastSquares/interceptOLS/interceptOLS.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { interceptOLS } from './interceptOLS';\n\n\ndescribe('An interceptOLS function', () => {\n\n\tconst avg1 = [3.2, 6.6];\n\tconst avg2 = [320, 660];\n\tconst lineObj1 = { b1: 0.261904761904762, b0: 5.761904761904761 };\n\tconst lineObj2 = { b1: 0.2619047619047619, b0: 576.1904761904761 };\n\n\n\tit('should generate the correct intercept based on inputs', () => {\n\t\tassert(interceptOLS(lineObj1, avg1) == lineObj1.b0);\n\t})\n\n\tit('should generate the correct intercept based on other inputs', () => {\n\t\tassert(interceptOLS(lineObj2, avg2) == lineObj2.b0);\n\t})\n})\n\n",
+    "static": true,
+    "longname": "lib/ordinaryLeastSquares/interceptOLS/interceptOLS.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 49,
+    "kind": "file",
+    "name": "lib/ordinaryLeastSquares/ols_regression/ols_regression.js",
+    "content": "import { sumPoints, avgPoints, sumSquaredResiduals } from '../../utils';\nimport { interceptOLS } from '../interceptOLS/interceptOLS';\n\n/**\nReturns an object representing the ordinary least squares line\n@return {object} An object representing a line\n*/\nexport function ols_regression(pointArr) {\n\tlet lineObj = {};\n\n\tconst sum = sumPoints(pointArr);\n\tconst avg = avgPoints(pointArr, sum);\n\tlineObj.b1 = sumSquaredResiduals(pointArr, avg);\n\tlineObj.b0 = interceptOLS(lineObj, avg);\n\n\treturn lineObj;\n}",
+    "static": true,
+    "longname": "lib/ordinaryLeastSquares/ols_regression/ols_regression.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 50,
+    "kind": "function",
+    "name": "ols_regression",
+    "memberof": "lib/ordinaryLeastSquares/ols_regression/ols_regression.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/ordinaryLeastSquares/ols_regression/ols_regression.js~ols_regression",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/ordinaryLeastSquares/ols_regression/ols_regression.js",
+    "importStyle": "{ols_regression}",
+    "description": "Returns an object representing the ordinary least squares line",
+    "lineNumber": 8,
+    "params": [
+      {
+        "name": "pointArr",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "object"
+      ],
+      "spread": false,
+      "description": "An object representing a line"
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "file",
+    "name": "lib/ordinaryLeastSquares/ols_regression/ols_regression.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { ols_regression } from './ols_regression';\n\n\ndescribe('An ols_regression function', () => {\n\t\n\tconst input = [\n\t\t[100,900],\n\t\t[500,800],\n\t\t[200,600],\n\t\t[100,600],\n\t\t[200,400],\n\t\t[100,500],\n\t\t[500,700],\n\t\t[500,700],\n\t\t[500,700],\n\t\t[500,700],\t\n\t]\n\n\n\tit('should return an object', () => {\n\t\tassert(typeof ols_regression(input) == 'object');\n\t})\n\n\tit('should return an object with property b0 equal to the intercept of the fit line of inputs', () => {\n\t\tassert(ols_regression(input).b0 == 576.1904761904761);\n\t})\n\n\tit('should return an object with property b1 equal to the slope of the fit line of inputs', () => {\n\t\tassert(ols_regression(input).b1 == 0.2619047619047619);\n\t})\n\n})\n\n\n",
+    "static": true,
+    "longname": "lib/ordinaryLeastSquares/ols_regression/ols_regression.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 52,
+    "kind": "file",
+    "name": "lib/utils/0D/balanceMagnitude/balanceMagnitude.js",
+    "content": "import { factorOfTen } from 'stones';\n\n/**\nReturns a value that, when multiplied with variable, weight, and error arguments, \nwill result in a value of the same magnitude as the result argument.\n@param {number} result - a y value, or the variable that the line is fitted to predict.\n@param {number} variable - an x value.\n@param {number} weight - the weight associated with the x value.\n@param {number} error - the error associated with the current gradient step.\n@return {number} An integer representing the power of 10 value that would balance result with the product of all other arguments\n*/\nexport function balanceMagnitude(result, variable, weight, error) {\n\tif(typeof result != 'number' || typeof variable != 'number' || \n\t   typeof weight != 'number' || typeof error != 'number') {\n\t\tthrow new Error('balanceMagnitude: One of the arguments is not a number');\n\t}\n\n\tconst resultMagnitude = factorOfTen(result);\n\tconst inputsMagnitude = factorOfTen(variable * error * weight);\n\n\treturn (resultMagnitude - inputsMagnitude);\n}",
+    "static": true,
+    "longname": "lib/utils/0D/balanceMagnitude/balanceMagnitude.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 53,
+    "kind": "function",
+    "name": "balanceMagnitude",
+    "memberof": "lib/utils/0D/balanceMagnitude/balanceMagnitude.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/0D/balanceMagnitude/balanceMagnitude.js~balanceMagnitude",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/0D/balanceMagnitude/balanceMagnitude.js",
+    "importStyle": "{balanceMagnitude}",
+    "description": "Returns a value that, when multiplied with variable, weight, and error arguments, \nwill result in a value of the same magnitude as the result argument.",
+    "lineNumber": 12,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "result",
+        "description": "a y value, or the variable that the line is fitted to predict."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "variable",
+        "description": "an x value."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "weight",
+        "description": "the weight associated with the x value."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": "the error associated with the current gradient step."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "An integer representing the power of 10 value that would balance result with the product of all other arguments"
+    }
+  },
+  {
+    "__docId__": 54,
+    "kind": "file",
+    "name": "lib/utils/0D/balanceMagnitude/balanceMagnitude.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { balanceMagnitude } from './balanceMagnitude';\n\n\ndescribe('A balanceMagnitude function', () => {\n\n\tconst resultA = 100;\n\tconst variableA = 50;\n\tconst weightA = 1;\n\tconst errorA = 1000;\n\tconst expectedMagnitudeA = -2;\n\n\tit('should return a number', () => {\n\t\tassert(typeof balanceMagnitude(resultA, variableA, weightA, errorA) == 'number');\n\t})\n\n\tit('should throw an error if one of the inputs is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tbalanceMagnitude(resultA, variableA, weightA, \"A String\");\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should return the correct answer', () => {\n\t\tassert(balanceMagnitude(resultA, variableA, weightA, errorA) == expectedMagnitudeA);\n\t})\n})\n\n",
+    "static": true,
+    "longname": "lib/utils/0D/balanceMagnitude/balanceMagnitude.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 55,
+    "kind": "file",
+    "name": "lib/utils/0D/index.js",
+    "content": "export { balanceMagnitude } from './balanceMagnitude/balanceMagnitude';",
+    "static": true,
+    "longname": "lib/utils/0D/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 56,
+    "kind": "file",
+    "name": "lib/utils/1D/avgPoints/avgPoints.js",
+    "content": "import { sumPoints } from '../sumPoints/sumPoints';\n\n\n/** \nReturns the average of x values and y values in a 2 dimensional array\n@param {array} pointArr - An array containing all coordinate points\n@param {array} pointSums - An array containing the computed sum of all x values and all y values\n@return {array} An array containing the average x value and y value of the pointArr\n*/\nexport function avgPoints(pointArr, pointSums) {\n\tif(!pointSums) {\n\t\tpointSums = sumPoints(pointArr);\n\t}\n\n\treturn pointSums.map(val => val / pointArr.length);\n}",
+    "static": true,
+    "longname": "lib/utils/1D/avgPoints/avgPoints.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 57,
+    "kind": "function",
+    "name": "avgPoints",
+    "memberof": "lib/utils/1D/avgPoints/avgPoints.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/avgPoints/avgPoints.js~avgPoints",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/avgPoints/avgPoints.js",
+    "importStyle": "{avgPoints}",
+    "description": "Returns the average of x values and y values in a 2 dimensional array",
+    "lineNumber": 10,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pointArr",
+        "description": "An array containing all coordinate points"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pointSums",
+        "description": "An array containing the computed sum of all x values and all y values"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "array"
+      ],
+      "spread": false,
+      "description": "An array containing the average x value and y value of the pointArr"
+    }
+  },
+  {
+    "__docId__": 58,
+    "kind": "file",
+    "name": "lib/utils/1D/avgPoints/avgPoints.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual } from 'stones';\n\nimport { avgPoints } from './avgPoints';\n\n\n\ndescribe('An avgPoints function', () => {\n\n\tconst pointArrA = [\n\t\t[1,2],\n\t\t[1,4],\n\t\t[4,6],\n\t\t[6,12]\n\t];\n\tconst pointSumsA = [12,24];\n\tconst actualAvgA = [3,6];\n\tconst pointArrB = [\n\t\t[1,2,3],\n\t\t[1,4,3],\n\t\t[4,6,3],\n\t\t[6,12,3]\n\t];\n\tconst pointSumsB = [12,24,12];\n\tconst actualAvgB = [3,6,3];\n\n\n\tit('should return an array', () => {\n\t\tassert(Array.isArray(avgPoints(pointArrA, pointSumsA)));\n\t})\n\n\tit('should return the average of coordinate pairs from the input', () => {\n\t\tassert(arraysEqual(avgPoints(pointArrA, pointSumsA), actualAvgA));\n\t})\n\n\tit('should return the average of coordinate pairs from an input with more than 2 points per coordinate set', () => {\n\t\tassert(arraysEqual(avgPoints(pointArrB, pointSumsB), actualAvgB));\n\t})\n\n\tit('should return integrate with sumPoints() when pointSums arg is not supplied', () => {\n\t\tassert(arraysEqual(avgPoints(pointArrA), actualAvgA));\n\t})\n})\n\n\n\n\n\n\n\n\n\n\n",
+    "static": true,
+    "longname": "lib/utils/1D/avgPoints/avgPoints.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 59,
+    "kind": "file",
+    "name": "lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.js",
+    "content": "import { factorOfTen } from 'stones';\n\n/**\nReturns an array of values that, when multiplied with variable, weight, and error arguments, \nwill result in a value of the same magnitude as the result argument.\n@param {array[number]} inputArr - an array of y and x values representing a potential input.\n@param {array[number]} weightArr - an array of weights.\n@param {number} error - the error associated with the current gradient step.\n@return {array[number]} An array representing the power of 10 values that would balance results with the product of all other arguments\n*/\nexport function balanceMagnitudeArray(inputArr, weightArr, error) {\n\t\n\tconst resultMagnitude = factorOfTen(inputArr[0]);\n\n\treturn weightArr.map((val,i) => {\n\t\tconst inputs = (i == 0 ? val * error : val * error * inputArr[i]);\n\t\tconst inputsMagnitude = factorOfTen(inputs);\n\n\t\treturn resultMagnitude - inputsMagnitude;\n\t})\n}\n\n",
+    "static": true,
+    "longname": "lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 60,
+    "kind": "function",
+    "name": "balanceMagnitudeArray",
+    "memberof": "lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.js~balanceMagnitudeArray",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.js",
+    "importStyle": "{balanceMagnitudeArray}",
+    "description": "Returns an array of values that, when multiplied with variable, weight, and error arguments, \nwill result in a value of the same magnitude as the result argument.",
+    "lineNumber": 11,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array[number]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "inputArr",
+        "description": "an array of y and x values representing a potential input."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array[number]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "weightArr",
+        "description": "an array of weights."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": "the error associated with the current gradient step."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "array[number]"
+      ],
+      "spread": false,
+      "description": "An array representing the power of 10 values that would balance results with the product of all other arguments"
+    }
+  },
+  {
+    "__docId__": 61,
+    "kind": "file",
+    "name": "lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual } from 'stones';\n\n\nimport { balanceMagnitudeArray } from './balanceMagnitudeArray';\n\n\ndescribe('A balanceMagnitudeArray function', () => {\n\n\n\tconst weightArrA = [100, 10, 4, 5];\n\tconst errorValA = 100;\n\tconst inputArrA = [1000, 10, 5, 5];\n\tconst magnitudeArrA = [-1,-1,0,0];\n\n\n\tit('should return an array', () => {\n\t\tassert(Array.isArray(balanceMagnitudeArray(inputArrA, weightArrA, errorValA)))\n\t})\n\n\tit('should throw an error if one of the inputs are missing', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tbalanceMagnitudeArray(inputArrA, weightArrA);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should return the correct magnitudes', () => {\n\t\tassert(arraysEqual(balanceMagnitudeArray(inputArrA, weightArrA, errorValA), magnitudeArrA))\n\t})\n\n\n})\n\n\n\n\n",
+    "static": true,
+    "longname": "lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 62,
+    "kind": "file",
+    "name": "lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.js",
+    "content": "\n\n/** \nReturns average value of the given input and a previously calculated average\n@param {number | array[numbers]} input - A number or array representing the values to be averaged\n@param {number} cummulativeAvg - A value representing the current average of values seen up until this point\n@param {number} cummulativeN - A value representing the number of values seen up until this point\n@return {number} A weighted average \n*/\nexport function cummulativeAvgPoints(input, cummulativeAvg = 0, cummulativeN = 0) {\n\t//All input types\n\tif((cummulativeAvg != 0 || cummulativeN != 0) && (cummulativeAvg == 0 || cummulativeN == 0)) {\n\t\tthrow new Error('cummulativeAvgPoints: cummulativeN and cummulativeAvg cannot be applied as arguments individually');\n\t}\n\n\tif(typeof cummulativeAvg != 'number' || typeof cummulativeN != 'number') {\n\t\tthrow new Error('cummulativeAvgPoints: cummulativeN and cummulativeAvg must be numbers');\n\t}\n\n\tif(typeof input == 'number') {\n\t\treturn (input + cummulativeAvg * cummulativeN) / (cummulativeN + 1);\n\t}\n\n\t//Array inputs\n\tif(Array.isArray(input) && Array.isArray(input[0])) {\n\t\tthrow new Error('cummulativeAvgPoints: Array is more than one dimension');\n\t}\n\n\treturn (input.reduce((p, c) => p + c) + cummulativeAvg * cummulativeN) / (cummulativeN + input.length);\n}",
+    "static": true,
+    "longname": "lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 63,
+    "kind": "function",
+    "name": "cummulativeAvgPoints",
+    "memberof": "lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.js~cummulativeAvgPoints",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.js",
+    "importStyle": "{cummulativeAvgPoints}",
+    "description": "Returns average value of the given input and a previously calculated average",
+    "lineNumber": 10,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number ",
+          " array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "input",
+        "description": "A number or array representing the values to be averaged"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cummulativeAvg",
+        "description": "A value representing the current average of values seen up until this point"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cummulativeN",
+        "description": "A value representing the number of values seen up until this point"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "A weighted average"
+    }
+  },
+  {
+    "__docId__": 64,
+    "kind": "file",
+    "name": "lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { cummulativeAvgPoints } from './cummulativeAvgPoints';\n\n\ndescribe('A cummulativeAvgPoints function', () => {\n\n\tconst inputs = [1,2,3,4,5,6,7,8,9,10];\n\tconst inputsA = [1,2,3,4];\n\tconst inputsB = [4,5,6,7,8,9,10];\n\tconst average = 5.5;\n\n\tit('should return a number', () => {\n\t\tassert(typeof cummulativeAvgPoints(inputs) == 'number');\n\t})\n\n\tit('should return the input if only a number input is supplied', () => {\n\t\tassert(cummulativeAvgPoints(1) == 1);\n\t})\n\n\tit('should return an average if only an array is supplied', () => {\n\t\tassert(cummulativeAvgPoints(inputs) == average);\n\t})\n\n\tit('should throw an error if either an average or a cumulativeN, is supplied without the other', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeAvgPoints(inputs, 10);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if an input is higher than a single dimensional array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeAvgPoints([[1,2,3]]);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if an input is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeAvgPoints(\"string\");\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if cumulativeN is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeAvgPoints(1,1,\"string\");\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if cumulativeAvg is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeAvgPoints(1,\"string\",1);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should return a correct weighted average based on inputs', () => {\n\t\tconst averageA = cummulativeAvgPoints(inputsA);\n\t\tassert(cummulativeAvgPoints(inputsB, averageA, inputsA.length));\n\t})\n\n})",
+    "static": true,
+    "longname": "lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 65,
+    "kind": "file",
+    "name": "lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.js",
+    "content": "\n/** \nReturns range of the given inputs and a previously calculated range\n@param {number | array[numbers]} input - A number or array representing the values to be evaluated\n@param {array[numbers]} cummulativeRange - A array representing the current range of values seen up until this point\n@return {array} A range of the given inputs\n*/\nexport function cummulativeRangePoints(input, cummulativeRange) {\n\tif(Array.isArray(input) && Array.isArray(input[0])) {\n\t\tthrow new Error('cummulativeRangePoints: input has too many dimensions');\n\t}\n\n\tif(!cummulativeRange || !cummulativeRange[0] || !cummulativeRange[1]) {\n\t\tcummulativeRange = Array.isArray(input) ? [input[0], input[0]] : [input, input];\n\t} else {\n\t\tif(cummulativeRange.length != 2) {\n\t\t\tthrow new Error('cummulativeRangePoints: cummulativeRange length != 2');\n\t\t}\n\n\t\tif(typeof cummulativeRange[0] != 'number' || typeof cummulativeRange[1] != 'number') {\n\t\t\tthrow new Error('cummulativeRangePoints: values in cummulativeRange are not numbers');\n\t\t}\n\t}\n\n\tconst testMinMax = (val) => [Math.min(cummulativeRange[0], val), Math.max(cummulativeRange[1], val)]\n\n\tif(typeof input == 'number') {\n\t\treturn testMinMax(input);\n\t}\n\t\n\tinput.forEach(val => { cummulativeRange = testMinMax(val) });\n\n\treturn cummulativeRange;\n\n}",
+    "static": true,
+    "longname": "lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 66,
+    "kind": "function",
+    "name": "cummulativeRangePoints",
+    "memberof": "lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.js~cummulativeRangePoints",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.js",
+    "importStyle": "{cummulativeRangePoints}",
+    "description": "Returns range of the given inputs and a previously calculated range",
+    "lineNumber": 8,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number ",
+          " array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "input",
+        "description": "A number or array representing the values to be evaluated"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cummulativeRange",
+        "description": "A array representing the current range of values seen up until this point"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "array"
+      ],
+      "spread": false,
+      "description": "A range of the given inputs"
+    }
+  },
+  {
+    "__docId__": 67,
+    "kind": "file",
+    "name": "lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { cummulativeRangePoints } from './cummulativeRangePoints';\nimport { arraysEqual } from 'stones';\n\n\ndescribe('A cummulativeRangePoints function', () => {\n\n\tconst inputs = [1,2,3,4,5,6,7,8,9,10];\n\tconst inputsA = [1,2,3,4];\n\tconst inputsB = [4,5,6,7,8,9,10];\n\tconst range = [1,10];\n\n\tit('should return an array', () => {\n\t\tassert(Array.isArray(cummulativeRangePoints(inputs)));\n\t})\n\n\tit('should return the input as an array if only a number input is supplied', () => {\n\t\tassert(arraysEqual(cummulativeRangePoints(1), [1,1]));\n\t})\n\n\tit('should return a range if only an array is supplied', () => {\n\t\tassert(arraysEqual(cummulativeRangePoints(inputs), range));\n\t})\n\n\tit('should throw an error if an input is higher than a single dimensional array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeRangePoints([[1,2,3]]);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if an input is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeRangePoints(\"string\");\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if cummulativeRange is not an array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeRangePoints(inputs, \"string\");\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if cummulativeRange does not have two numbers in the array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tcummulativeRangePoints(inputs, [1, \"string\"]);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should return a correct range based on inputs', () => {\n\t\tconst rangeA = cummulativeRangePoints(inputsA);\n\t\tassert(arraysEqual(cummulativeRangePoints(inputsB, rangeA), range));\n\t})\n\n})",
+    "static": true,
+    "longname": "lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 68,
+    "kind": "file",
+    "name": "lib/utils/1D/evalError/evalError.js",
+    "content": "import { evalGuess } from '../evalGuess/evalGuess';\n\n\n/** \nReturns an error value from inputs and weights\n@param {array[numbers]} inputArr - An array representing the values to be evaluated, with the y value in the [0] position\n@param {array[numbers]} weightArr - An array representing the weights to be used with the values, with b0 in the [0] position\n@return {number} Sum of errors using the weightArr\n*/\nexport function evalError(inputArr, weightArr) {\n\n\tif(!Array.isArray(inputArr)) {\n\t\tthrow new Error('evalError: InputArr is not an array');\n\t}\n\n\tif(!Array.isArray(inputArr[0])) {\n\t\treturn inputArr[0] - evalGuess(inputArr, weightArr);\n\n\t} else {\n\t\treturn inputArr.reduce((prev, curr, i) => {\n\t\t\tif(!Array.isArray(curr) || typeof curr[0] != 'number') {\n\t\t\t\tthrow new Error('evalError: A value in inputArr is not an array of numbers');\n\t\t\t}\n\n\t\t\tif(Array.isArray(prev)) {\n\t\t\t\tprev = prev[0] - evalGuess(prev, weightArr);\n\t\t\t}\n\n\t\t\tcurr = curr[0] - evalGuess(curr, weightArr);\n\n\t\t\treturn prev + curr;\n\t\t})\n\t}\n}",
+    "static": true,
+    "longname": "lib/utils/1D/evalError/evalError.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 69,
+    "kind": "function",
+    "name": "evalError",
+    "memberof": "lib/utils/1D/evalError/evalError.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/evalError/evalError.js~evalError",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/evalError/evalError.js",
+    "importStyle": "{evalError}",
+    "description": "Returns an error value from inputs and weights",
+    "lineNumber": 10,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "inputArr",
+        "description": "An array representing the values to be evaluated, with the y value in the [0] position"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "weightArr",
+        "description": "An array representing the weights to be used with the values, with b0 in the [0] position"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "Sum of errors using the weightArr"
+    }
+  },
+  {
+    "__docId__": 70,
+    "kind": "file",
+    "name": "lib/utils/1D/evalError/evalError.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { evalError } from './evalError';\n\n\ndescribe('An evalError function', () => {\n\n\n\tconst inputA = [\n\t\t[1,2],\n\t\t[3,4],\n\t\t[5,6],\n\t];\n\tconst weightA = [0,0];\n\tconst errorA = inputA[2][0] + inputA[1][0] + inputA[0][0];\n\n\n\tit('should return a number, integrating with evalGuess', () => {\n\t\tassert(typeof evalError(inputA, weightA) == 'number');\n\t});\n\n\tit('should throw an error if the input is not a two dimensional array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalError(\"A String\", weightA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t});\n\n\tit('should throw an error if the input is not an array of arrays of numbers', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalError([\"A String\"], weightA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t});\n\n\tit('should throw an error if a value in the input is not an array of numbers', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalError([[1,2],[\"String\"]], weightA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t});\n\n\tit('should throw an error if the weightArr is not an array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalError(inputA, \"A String\");\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if the weightArr is not a single dimensional array', () => {\n\t\tlet testPassed = false;\n\t\t\n\t\ttry {\n\t\t\tevalError(inputA, [[]]);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if the weightArr is not an array of numbers', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalError(inputA, [\"A String\"]);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if one of the arguments are missing', () => {\n\t\tlet testPassed = false;\n\t\t\n\t\ttry {\n\t\t\tevalError(inputA);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should return the correct value', () => {\n\t\tassert(evalError(inputA, weightA) == errorA);\n\t})\n})",
+    "static": true,
+    "longname": "lib/utils/1D/evalError/evalError.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 71,
+    "kind": "file",
+    "name": "lib/utils/1D/evalGuess/evalGuess.js",
+    "content": "\n/** \nReturns an expected result using supplied inputs and weights\n@param {array[numbers]} input - An array representing x and y values\n@param {array[numbers]} weightArr - An array representing weights used to estimate a y value\n@return {number} An expected y value\n*/\nexport function evalGuess(input, weightArr) {\n\tif(!Array.isArray(input) || Array.isArray(input[0]) || typeof input[0] != 'number') {\n\t\tthrow new Error('evalGuess: input is not a single dimensional array of numbers');\n\t}\n\n\tif(!Array.isArray(weightArr) || Array.isArray(weightArr[0]) || typeof weightArr[0] != 'number') {\n\t\tthrow new Error('evalGuess: weightArr is not a single dimensional array of numbers');\n\t}\n\n\treturn weightArr.reduce((prev, curr, i) => {\n\t\treturn prev + input[i] * curr;\n\t})\n}",
+    "static": true,
+    "longname": "lib/utils/1D/evalGuess/evalGuess.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 72,
+    "kind": "function",
+    "name": "evalGuess",
+    "memberof": "lib/utils/1D/evalGuess/evalGuess.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/evalGuess/evalGuess.js~evalGuess",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/evalGuess/evalGuess.js",
+    "importStyle": "{evalGuess}",
+    "description": "Returns an expected result using supplied inputs and weights",
+    "lineNumber": 8,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "input",
+        "description": "An array representing x and y values"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "weightArr",
+        "description": "An array representing weights used to estimate a y value"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "An expected y value"
+    }
+  },
+  {
+    "__docId__": 73,
+    "kind": "file",
+    "name": "lib/utils/1D/evalGuess/evalGuess.test.js",
+    "content": "import assert from 'assert';\n\n\nimport { evalGuess } from './evalGuess';\n\n\ndescribe('An evalGuess function', () => {\n\n\tconst inputA = [1,2];\n\tconst weightA = [3,4];\n\tconst guessA = weightA[0] + weightA[1] * inputA[1];\n\n\n\tit('should return a number', () => {\n\t\tassert(typeof evalGuess(inputA, weightA) == 'number');\n\t});\n\n\tit('should throw an error if the input is not an array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalGuess(\"A String\", weightA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t});\n\n\tit('should throw an error if the input is not a single dimensional array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalGuess([[]], weightA);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if the input is not an array of numbers', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalGuess([\"A String\"], weightA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t});\n\n\tit('should throw an error if the weightArr is not an array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalGuess(inputA, \"A String\");\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if the weightArr is not a single dimensional array', () => {\n\t\tlet testPassed = false;\n\t\t\n\t\ttry {\n\t\t\tevalGuess(inputA, [[]]);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if the weightArr is not an array of numbers', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tevalGuess(inputA, [\"A String\"]);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if one of the arguments are missing', () => {\n\t\tlet testPassed = false;\n\t\t\n\t\ttry {\n\t\t\tevalGuess(inputA);\n\t\t} catch(e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should return the correct value', () => {\n\t\tassert(evalGuess(inputA, weightA) == guessA);\n\t})\n})",
+    "static": true,
+    "longname": "lib/utils/1D/evalGuess/evalGuess.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 74,
+    "kind": "file",
+    "name": "lib/utils/1D/gradientStep/gradientStep.js",
+    "content": "\n\n/** \nReturns a new set of weights\n@param {array[numbers]} weightArr - An array of numbers representing estimated weights, with b0 in the [0] position\n@param {array[numbers]} input - An array of numbers representing the original inputs in some way, with y in the [0] position\n@param {number} error - A number representing an error value pointing in the direction of the next gradient step\n@param {array[number]} learningRateArr - An array of numbers representing the magnitudes of changes in the weights\n@return {array} A new set of weights\n*/\nexport function gradientStep(weightArr, input, error, learningRateArr) {\n\n\tif(!(weightArr && input && error && learningRateArr)) {\n\t\tthrow new Error('gradientStep: an argument is missing');\n\t}\n\n\tif(!Array.isArray(input)) {\n\t\tthrow new Error('gradientStep: input argument is not an array');\n\t}\n\n\tif(typeof error != 'number') {\n\t\tthrow new Error('gradientStep: error argument is not a number');\n\t}\n\n\n\treturn weightArr.map((val, i) => {\n\n\t\tif(typeof val != 'number' || typeof input[i] != 'number') {\n\t\t\tthrow new Error('gradientStep: a value in weightArr or input is not a number');\n\t\t}\n\n\n\n\t\treturn i == 0 ? \n\t\t\tval + error * learningRateArr[i] :\n\t\t\tval + error * input[i] * learningRateArr[i];\n\t})\n}",
+    "static": true,
+    "longname": "lib/utils/1D/gradientStep/gradientStep.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 75,
+    "kind": "function",
+    "name": "gradientStep",
+    "memberof": "lib/utils/1D/gradientStep/gradientStep.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/gradientStep/gradientStep.js~gradientStep",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/gradientStep/gradientStep.js",
+    "importStyle": "{gradientStep}",
+    "description": "Returns a new set of weights",
+    "lineNumber": 11,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "weightArr",
+        "description": "An array of numbers representing estimated weights, with b0 in the [0] position"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array[numbers]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "input",
+        "description": "An array of numbers representing the original inputs in some way, with y in the [0] position"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": "A number representing an error value pointing in the direction of the next gradient step"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array[number]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "learningRateArr",
+        "description": "An array of numbers representing the magnitudes of changes in the weights"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "array"
+      ],
+      "spread": false,
+      "description": "A new set of weights"
+    }
+  },
+  {
+    "__docId__": 76,
+    "kind": "file",
+    "name": "lib/utils/1D/gradientStep/gradientStep.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual } from 'stones';\n\n\nimport { gradientStep } from './gradientStep';\n\n\ndescribe('A gradientStep function', () => {\n\n\tconst weightsA = [1,2];\n\tconst inputA = [3,4];\n\tconst errorA = 2;\n\tconst learningRateArrA = [0.5, 1];\n\tconst newWeightsA = [2,10];\n\n\tit('should return an array', () => {\n\t\tassert(Array.isArray(gradientStep(weightsA, inputA, errorA, learningRateArrA)));\n\t})\n\n\tit('should throw an error if weightArr is not an array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tgradientStep(\"A String\", inputA, errorA, learningRateArrA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if a value in weightArr is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tgradientStep([1, \"A String\"], inputA, errorA, learningRateArrA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if input is not an array', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tgradientStep(weightsA, \"A String\", errorA, learningRateArrA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if a value in input is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tgradientStep(weightsA, [1, \"A String\"], errorA, learningRateArrA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if error is not a number', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tgradientStep(weightsA, inputA, \"A String\", learningRateArrA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should throw an error if an argument is missing', () => {\n\t\tlet testPassed = false;\n\n\t\ttry {\n\t\t\tgradientStep(weightsA, inputA, learningRateArrA);\n\t\t} catch (e) {\n\t\t\ttestPassed = true;\n\t\t}\n\n\t\tassert(testPassed);\n\t})\n\n\tit('should return the correct value', () => {\n\t\tassert(arraysEqual(gradientStep(weightsA, inputA, errorA, learningRateArrA), newWeightsA));\n\t})\n})",
+    "static": true,
+    "longname": "lib/utils/1D/gradientStep/gradientStep.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 77,
+    "kind": "file",
+    "name": "lib/utils/1D/index.js",
+    "content": "export { avgPoints } from './avgPoints/avgPoints';\n\nexport { balanceMagnitudeArray } from './balanceMagnitudeArray/balanceMagnitudeArray';\n\nexport { cummulativeAvgPoints } from './cummulativeAvgPoints/cummulativeAvgPoints';\n\nexport { cummulativeRangePoints } from './cummulativeRangePoints/cummulativeRangePoints';\n\nexport { evalError } from './evalError/evalError';\n\nexport { evalGuess } from './evalGuess/evalGuess';\n\nexport { gradientStep } from './gradientStep/gradientStep';\n\nexport { meanSquaredErrors } from './meanSquaredErrors/meanSquaredErrors';\n\nexport { sumPoints } from './sumPoints/sumPoints';\n\nexport { sumSquaredErrors } from './sumSquaredErrors/sumSquaredErrors';\n\nexport { sumSquaredResiduals } from './sumSquaredResiduals/sumSquaredResiduals';\n\n",
+    "static": true,
+    "longname": "lib/utils/1D/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 78,
+    "kind": "file",
+    "name": "lib/utils/1D/meanSquaredErrors/meanSquaredErrors.js",
+    "content": "import { sumSquaredErrors } from '../sumSquaredErrors/sumSquaredErrors';\n\n/** \nReturns the MSE of a 2D coordinate array\n@param {array} pointArr - An array containing all coordinate points\n@param {object} lineObj - An object containing the b1 and b0 weights for an OLS regression\n@return {number} A number representing the MSE of a 2D coordinate array\n*/\nexport function meanSquaredErrors(pointArr, lineObj) {\n\treturn sumSquaredErrors(pointArr, lineObj) / pointArr.length;\n}",
+    "static": true,
+    "longname": "lib/utils/1D/meanSquaredErrors/meanSquaredErrors.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 79,
+    "kind": "function",
+    "name": "meanSquaredErrors",
+    "memberof": "lib/utils/1D/meanSquaredErrors/meanSquaredErrors.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/meanSquaredErrors/meanSquaredErrors.js~meanSquaredErrors",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/meanSquaredErrors/meanSquaredErrors.js",
+    "importStyle": "{meanSquaredErrors}",
+    "description": "Returns the MSE of a 2D coordinate array",
+    "lineNumber": 9,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pointArr",
+        "description": "An array containing all coordinate points"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lineObj",
+        "description": "An object containing the b1 and b0 weights for an OLS regression"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "A number representing the MSE of a 2D coordinate array"
+    }
+  },
+  {
+    "__docId__": 80,
+    "kind": "file",
+    "name": "lib/utils/1D/meanSquaredErrors/meanSquaredErrors.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual } from 'stones';\n\n\nimport { meanSquaredErrors } from './meanSquaredErrors';\n\n\ndescribe('An meanSquaredErrors function', () => {\n\n\tconst lineObj = {\n\t\tb0: 0,\n\t\tb1: 0,\n\t}\n\tconst testInput = [\n\t\t[1,1],\n\t\t[-2,-2],\n\t\t[3,3],\n\t]\n\n\tit('should return a number', () => {\n\t\tassert(typeof meanSquaredErrors(testInput, lineObj) == 'number');\n\t})\n\n\tit('should return the mean squared distance of each point from the input line', () => {\n\t\tassert(meanSquaredErrors(testInput, lineObj) == 14 / 3);\n\t})\n\n})\n",
+    "static": true,
+    "longname": "lib/utils/1D/meanSquaredErrors/meanSquaredErrors.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 81,
+    "kind": "file",
+    "name": "lib/utils/1D/sumPoints/sumPoints.js",
+    "content": "/** \nReturns the sum of x values and y values in a 2 dimensional array\n@param {array} pointArr - An array containing all coordinate points\n@return {array} An array containing the sums of x values and y values of the pointArr\n*/\nexport function sumPoints(pointArr) {\n\treturn pointArr.reduce(function(prev, curr, i) {\n\t\treturn prev.map((val, i) => val + curr[i]);\n\t});\n}",
+    "static": true,
+    "longname": "lib/utils/1D/sumPoints/sumPoints.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 82,
+    "kind": "function",
+    "name": "sumPoints",
+    "memberof": "lib/utils/1D/sumPoints/sumPoints.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/sumPoints/sumPoints.js~sumPoints",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/sumPoints/sumPoints.js",
+    "importStyle": "{sumPoints}",
+    "description": "Returns the sum of x values and y values in a 2 dimensional array",
+    "lineNumber": 6,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pointArr",
+        "description": "An array containing all coordinate points"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "array"
+      ],
+      "spread": false,
+      "description": "An array containing the sums of x values and y values of the pointArr"
+    }
+  },
+  {
+    "__docId__": 83,
+    "kind": "file",
+    "name": "lib/utils/1D/sumPoints/sumPoints.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual } from 'stones';\n\n\nimport { sumPoints } from './sumPoints';\n\n\ndescribe('An sumPoints function', () => {\n\n\tconst testInputA = [\n\t\t[1,2],\n\t\t[3,4],\n\t\t[5,6],\n\t];\n\tconst testSumA = [1+3+5, 2+4+6];\n\tconst testInputB = [\n\t\t[1,2,7],\n\t\t[3,4,8],\n\t\t[5,6,9],\n\t]\n\tconst testSumB = [1+3+5, 2+4+6, 7+8+9];\n\n\tit('should return an array', () => {\n\t\tassert(Array.isArray(sumPoints(testInputA)));\n\t})\n\n\tit('should return sum of coordinates from a 2D coordinate input', () => {\n\t\tassert(sumPoints(testInputA), testSumA);\n\t})\n\n\tit('should return the sum of coordinates from an input with more than 2 coordinates', () => {\n\t\tassert(sumPoints(testInputB), testSumB);\n\t})\n\n})",
+    "static": true,
+    "longname": "lib/utils/1D/sumPoints/sumPoints.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 84,
+    "kind": "file",
+    "name": "lib/utils/1D/sumSquaredErrors/sumSquaredErrors.js",
+    "content": "/** \nReturns the SSE (sum of squared errors) for a 2D coordinate array\n@param {array} pointArr - An array containing a set of coordinate points\n@param {object} lineObj - An object containing the b1 and b0 weights for an OLS regression\n@return {number} A number representing the SSE of the points in pointArr given the line specified by lineObj\n*/\nexport function sumSquaredErrors(pointArr, lineObj) {\n\treturn pointArr.reduce(function(prev, curr, i) {\n\t\tif (Array.isArray(prev)) {\n\t\t\tprev = Math.pow(lineObj.b1 * prev[0] + lineObj.b0 - prev[1], 2);\n\t\t}\n\n\t\tconst actualY = lineObj.b1 * curr[0] + lineObj.b0;\n\n\t\treturn prev + Math.pow(actualY - curr[1], 2);\n\t})\n}",
+    "static": true,
+    "longname": "lib/utils/1D/sumSquaredErrors/sumSquaredErrors.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 85,
+    "kind": "function",
+    "name": "sumSquaredErrors",
+    "memberof": "lib/utils/1D/sumSquaredErrors/sumSquaredErrors.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/sumSquaredErrors/sumSquaredErrors.js~sumSquaredErrors",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/sumSquaredErrors/sumSquaredErrors.js",
+    "importStyle": "{sumSquaredErrors}",
+    "description": "Returns the SSE (sum of squared errors) for a 2D coordinate array",
+    "lineNumber": 7,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pointArr",
+        "description": "An array containing a set of coordinate points"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lineObj",
+        "description": "An object containing the b1 and b0 weights for an OLS regression"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "A number representing the SSE of the points in pointArr given the line specified by lineObj"
+    }
+  },
+  {
+    "__docId__": 86,
+    "kind": "file",
+    "name": "lib/utils/1D/sumSquaredErrors/sumSquaredErrors.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual } from 'stones';\n\n\nimport { sumSquaredErrors } from './sumSquaredErrors';\n\n\ndescribe('An sumSquaredErrors function', () => {\n\n\tconst lineObj = {\n\t\tb0: 0,\n\t\tb1: 0,\n\t}\n\tconst testInput = [\n\t\t[1,1],\n\t\t[-2,-2],\n\t\t[3,3],\n\t]\n\n\tit('should return a number', () => {\n\t\tassert(typeof sumSquaredErrors(testInput, lineObj) == 'number');\n\t})\n\n\tit('should return the squared distances of each point from the input line', () => {\n\t\tassert(sumSquaredErrors(testInput, lineObj) == 14);\n\t})\n\n})\n",
+    "static": true,
+    "longname": "lib/utils/1D/sumSquaredErrors/sumSquaredErrors.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 87,
+    "kind": "file",
+    "name": "lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.js",
+    "content": "import { avgPoints } from '../avgPoints/avgPoints';\n\n/** \nReturns the SSR (sum of squared residuals) for a 2D coordinate array\n@param {array} pointArr - An array containing a set of coordinate points\n@param {array} avg - An array containing the average of all y values and all x values\n@return {number} A number representing the SSR of the points in pointArr given the average value\n*/\nexport function sumSquaredResiduals(pointArr, avg) {\n\tif(!avg) {\n\t\tavg = avgPoints(pointArr);\n\t}\n\t\n\tvar numerator = 0;\n\tvar denomenator = 0;\n\tvar xmean = avg[0];\n\tvar ymean = avg[1];\n\n\tfor(var i = 0; i < pointArr.length; i++) {\n\t\tvar x = pointArr[i][0];\n\t\tvar y = pointArr[i][1];\n\n\t\tnumerator += (x - xmean) * (y - ymean);\n\t\tdenomenator += (x - xmean) * (x - xmean);\n\t}\n\n\treturn numerator / denomenator;\n}",
+    "static": true,
+    "longname": "lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 88,
+    "kind": "function",
+    "name": "sumSquaredResiduals",
+    "memberof": "lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.js~sumSquaredResiduals",
+    "access": null,
+    "export": true,
+    "importPath": "viktor/lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.js",
+    "importStyle": "{sumSquaredResiduals}",
+    "description": "Returns the SSR (sum of squared residuals) for a 2D coordinate array",
+    "lineNumber": 9,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pointArr",
+        "description": "An array containing a set of coordinate points"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "avg",
+        "description": "An array containing the average of all y values and all x values"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "A number representing the SSR of the points in pointArr given the average value"
+    }
+  },
+  {
+    "__docId__": 89,
+    "kind": "file",
+    "name": "lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.test.js",
+    "content": "import assert from 'assert';\nimport { arraysEqual } from 'stones';\n\n\nimport { sumSquaredResiduals } from './sumSquaredResiduals';\n\n\ndescribe('An sumSquaredResiduals function', () => {\n\n\tconst testInput = [\n\t\t[1,1],\n\t\t[2,2],\n\t\t[3,3],\n\t\t[4,4],\n\t\t[0,0],\n\t]\n\n\tit('should return a number', () => {\n\t\tassert(typeof sumSquaredResiduals(testInput, [2,2]) == 'number');\n\t})\n\n\tit('should return the sum of squared residuals of each point from the input', () => {\n\t\tassert(sumSquaredResiduals(testInput, [2,2]) == 1);\n\t})\n\n\tit('should integrate with the avgPoints function if avg not supplied', () => {\n\t\tassert(sumSquaredResiduals(testInput) == 1);\n\t})\n\n})\n",
+    "static": true,
+    "longname": "lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 90,
+    "kind": "file",
+    "name": "lib/utils/index.js",
+    "content": "export * from './0D';\n\nexport * from './1D';",
+    "static": true,
+    "longname": "lib/utils/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 92,
+    "kind": "external",
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 93,
+    "kind": "external",
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 94,
+    "kind": "external",
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 95,
+    "kind": "external",
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 96,
+    "kind": "external",
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 97,
+    "kind": "external",
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 98,
+    "kind": "external",
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 99,
+    "kind": "external",
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 100,
+    "kind": "external",
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 101,
+    "kind": "external",
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 102,
+    "kind": "external",
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 103,
+    "kind": "external",
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 104,
+    "kind": "external",
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 105,
+    "kind": "external",
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 106,
+    "kind": "external",
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 107,
+    "kind": "external",
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 108,
+    "kind": "external",
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 109,
+    "kind": "external",
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 110,
+    "kind": "external",
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 111,
+    "kind": "external",
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 112,
+    "kind": "external",
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 113,
+    "kind": "external",
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 114,
+    "kind": "external",
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 115,
+    "kind": "external",
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 116,
+    "kind": "external",
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 117,
+    "kind": "external",
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 118,
+    "kind": "external",
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 119,
+    "kind": "external",
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 120,
+    "kind": "external",
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 121,
+    "kind": "external",
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 122,
+    "kind": "external",
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 123,
+    "kind": "external",
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 124,
+    "kind": "external",
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 125,
+    "kind": "external",
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 126,
+    "kind": "external",
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 127,
+    "kind": "external",
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 128,
+    "kind": "external",
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 129,
+    "kind": "external",
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 130,
+    "kind": "external",
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 131,
+    "kind": "external",
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 132,
+    "kind": "external",
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 133,
+    "kind": "external",
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 134,
+    "kind": "external",
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 135,
+    "kind": "external",
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 136,
+    "kind": "external",
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 137,
+    "kind": "external",
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 138,
+    "kind": "external",
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "lineNumber": 193,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 140,
+    "kind": "external",
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 141,
+    "kind": "external",
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 142,
+    "kind": "external",
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 143,
+    "kind": "external",
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 144,
+    "kind": "external",
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 145,
+    "kind": "external",
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 146,
+    "kind": "external",
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 147,
+    "kind": "external",
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "lineNumber": 34,
+    "builtinExternal": true
+  }
+]
