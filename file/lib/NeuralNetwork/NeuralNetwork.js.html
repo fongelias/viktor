@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/NeuralNetwork/NeuralNetwork.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/fongelias/viktor" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">NeuralNetwork</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/NeuralNetwork/NeuralNetwork.js~NeuralNetwork.html">NeuralNetwork</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Tensor</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Tensor/Tensor.js~Tensor.html">Tensor</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">curves/sigmoidCurve</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sigmoidCurve">sigmoidCurve</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">curves/sigmoidDerivative</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sigmoidDerivative">sigmoidDerivative</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">ordinaryLeastSquares/interceptOLS</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interceptOLS">interceptOLS</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">ordinaryLeastSquares/ols_regression</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ols_regression">ols_regression</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/0D/balanceMagnitude</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-balanceMagnitude">balanceMagnitude</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/avgPoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-avgPoints">avgPoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/balanceMagnitudeArray</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-balanceMagnitudeArray">balanceMagnitudeArray</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/cummulativeAvgPoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-cummulativeAvgPoints">cummulativeAvgPoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/cummulativeRangePoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-cummulativeRangePoints">cummulativeRangePoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/evalError</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evalError">evalError</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/evalGuess</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evalGuess">evalGuess</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/gradientStep</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-gradientStep">gradientStep</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/meanSquaredErrors</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-meanSquaredErrors">meanSquaredErrors</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/sumPoints</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sumPoints">sumPoints</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/sumSquaredErrors</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sumSquaredErrors">sumSquaredErrors</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/1D/sumSquaredResiduals</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sumSquaredResiduals">sumSquaredResiduals</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/NeuralNetwork/NeuralNetwork.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Matrix, RandomGaussianGenerator, multiplyMatricies, arrayToMatrix } from &apos;stones&apos;;
+import { sigmoidCurve, sigmoidDerivative } from &apos;../curves&apos;;
+
+
+
+/**
+Class representing a Neural Network
+*/
+export class NeuralNetwork {
+
+	/**
+	Create a NeuralNetwork
+	@constructor
+	@param {Int} inputNodes - The number of input nodes
+	@param {Int} hiddenNodes - The number of hidden nodes
+	@param {Int} outputNodes - The number of output nodes
+	@param {Int} learningRate - The learning rate for training
+	*/
+	constructor(inputNodes, hiddenNodes, outputNodes, learningRate) {
+		if(!inputNodes || !hiddenNodes || !outputNodes || !learningRate) {
+			throw new Error(&apos;NeuralNetwork: an argument is missing&apos;);
+		}
+
+		//General Properties
+		this.inputNodes = inputNodes;
+		this.hiddenNodes = hiddenNodes;
+		this.outputNodes = outputNodes;
+		this.learningRate = learningRate;
+
+		//Matricies
+		this.inputToHiddenMatrix = new Matrix(hiddenNodes, inputNodes);
+		this.hiddenToOutputMatrix = new Matrix(outputNodes, hiddenNodes);
+
+		//Utilities
+		this.randGen = new RandomGaussianGenerator().next;
+
+
+		//Randomize Matricies
+		this.inputToHiddenMatrix = this.inputToHiddenMatrix.map(() =&gt; this.randGen());
+		this.hiddenToOutputMatrix = this.hiddenToOutputMatrix.map(() =&gt; this.randGen());
+
+	}
+
+	/**
+	Returns a copy of the NeuralNetwork
+	@return {NeuralNetwork} A NeuralNetwork object
+	*/
+	copy() {
+		let networkCopy = new NeuralNetwork(this.inputNodes, this.hiddenNodes, this.outputNodes, this.learningRate);
+		networkCopy.inputToHiddenMatrix = this.inputToHiddenMatrix.copy();
+		networkCopy.hiddenToOutputMatrix = this.hiddenToOutputMatrix.copy();
+
+		return networkCopy;
+	}
+
+
+	/**
+	Train the NeuralNetwork
+	@param {array[number]} inputArr - A single dimensional array of number inputs
+	@param {array[number]} targetArr - A single dimensional array of numbers representing expected outputs
+	@return {object} An object containing properties representing errors between the Network&apos;s output and target outputs and errors in the hidden node layer
+	*/
+	train(inputArr, targetArr) {
+		//Use Weights to make a guess
+		let evalResults = this.eval(inputArr);
+		
+		//Calculate Error
+		const targetMatrix = new Matrix(arrayToMatrix(targetArr,targetArr.length, 1));
+		const errors = targetMatrix.copy().subtract(evalResults.outputMatrix);
+		
+		//Calculate Hidden Errors
+		const hiddenOutputMatrix_transposed = this.hiddenToOutputMatrix.copy().transpose();
+		const hiddenErrors = new Matrix(multiplyMatricies(hiddenOutputMatrix_transposed.matrix, errors.matrix));
+		
+		//Calculate Gradients
+		const gradient = evalResults.outputMatrix.map(sigmoidDerivative).hadamardProduct(errors).multiply(this.learningRate);
+		const hiddenGradient = evalResults.hiddenOutputMatrix.map(sigmoidDerivative).hadamardProduct(hiddenErrors).multiply(this.learningRate);
+		
+		//Calculate Change in Outputs
+		const hiddenToOutputChange = gradient.copy().multiply(evalResults.hiddenOutputMatrix.copy().transpose());
+		const inputToHiddenChange = hiddenGradient.copy().multiply(evalResults.inputMatrix.copy().transpose());
+		
+		//Update weights
+		this.hiddenToOutputMatrix.add(hiddenToOutputChange);
+		this.inputToHiddenMatrix.add(inputToHiddenChange);
+
+
+		return {
+			errors,
+			hiddenErrors,
+		};
+	}
+
+	/**
+	Evaluate inputs based on the current state of the NeuralNetwork
+	@param {array[number]} inputArr - A single dimensional array of number inputs
+	@return {object} An object containing matricies representing the input, hidden node outputs, and final outputs
+	*/
+	eval(inputArr) {
+		let inputMatrix = new Matrix(arrayToMatrix(inputArr,inputArr.length, 1));
+
+		let hiddenOutputMatrix = new Matrix(multiplyMatricies(this.inputToHiddenMatrix.matrix, inputMatrix.matrix));
+		hiddenOutputMatrix = hiddenOutputMatrix.map(sigmoidCurve);
+
+		return {
+			inputMatrix,
+			hiddenOutputMatrix,
+			outputMatrix : new Matrix(multiplyMatricies(this.hiddenToOutputMatrix.matrix, hiddenOutputMatrix.matrix)).map(sigmoidCurve),
+		};
+
+	}
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

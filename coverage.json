@@ -1,0 +1,97 @@
+{
+  "coverage": "100%",
+  "expectCount": 26,
+  "actualCount": 26,
+  "files": {
+    "lib/NeuralNetwork/NeuralNetwork.js": {
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
+    },
+    "lib/Tensor/Tensor.js": {
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/avgPoints/avgPoints.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/0D/balanceMagnitude/balanceMagnitude.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/balanceMagnitudeArray/balanceMagnitudeArray.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/cummulativeAvgPoints/cummulativeAvgPoints.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/cummulativeRangePoints/cummulativeRangePoints.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/evalError/evalError.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/evalGuess/evalGuess.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/gradientStep/gradientStep.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/ordinaryLeastSquares/interceptOLS/interceptOLS.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/meanSquaredErrors/meanSquaredErrors.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/ordinaryLeastSquares/ols_regression/ols_regression.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/curves/sigmoidCurve/sigmoidCurve.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/curves/sigmoidDerivative/sigmoidDerivative.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/sumPoints/sumPoints.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/sumSquaredErrors/sumSquaredErrors.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/1D/sumSquaredResiduals/sumSquaredResiduals.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    }
+  }
+}
