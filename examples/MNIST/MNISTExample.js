@@ -39,7 +39,7 @@ function train() {
 
 
 //Read the file, then train the network with the data. This takes ~3.5 minutes per 1000 inputs
-readFile('examples/MNIST/data/train/mnist_train_10000.csv').then(function(data) {
+readFile('examples/MNIST/data/train/mnist_train_100.csv').then(function(data) {
 	//Format data into an array
 	trainingData = data.split('\n');
 	trainingData = trainingData.map(function(val) {
