@@ -23,3 +23,9 @@ Neural Networks are implemented using the [stones](https://github.com/fongelias/
 
 ### Future Direction
 As there are many ways to build neural networks, the next version of viktor will include more models and activation functions. Then, performance optimizations using GPU computation will be next, followed by Network wrappers to allow optimization of learning rates during training
+
+## Useful Links
+[Stanford Deep Learning Cheat Sheet](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-deep-learning)
+[Stanford Supervised Learning Cheat Sheet](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-supervised-learning)
+[Stanford Unsupervised Learning Cheat Sheet](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-unsupervised-learning)
+[Stanford Tips and Tricks](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learning-tips-and-tricks)
